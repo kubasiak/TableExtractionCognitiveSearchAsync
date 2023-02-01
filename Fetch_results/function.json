@@ -1,0 +1,12 @@
+{
+  "scriptFile": "__init__.py",
+  "bindings": [
+    {
+      "name": "msgin",
+      "type": "serviceBusTrigger",
+      "direction": "in",
+      "queueName": "polling_queue",
+      "connection": "AzureServiceBusConnectionString"
+    }
+  ]
+}

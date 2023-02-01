@@ -1,0 +1,8 @@
+.git*
+.vscode
+local.settings.json
+test
+.venv
+venv
+test_start_processing.ipynb
+test_fetch.ipynb
