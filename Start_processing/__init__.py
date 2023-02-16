@@ -15,9 +15,7 @@ def main(req: func.HttpRequest, msg: func.Out[str]) -> func.HttpResponse:
              "Invalid body",
              status_code=400
         )
-    
     if body:
-        # Connect to Azure App Configuration using a connection string.
         result = compose_response(body, msg)
         return func.HttpResponse(result, mimetype="application/json")
     else:
@@ -55,7 +53,6 @@ def transform_value(value, msg):
         assert ('data' in value), "'data' field is required."
         data = value['data']        
         assert ( 'metadata_storage_path' in data), "'metadata_storage_path' field is required in 'data' object."
-        assert ('formUrl' in data), "'formUrl' field is required in 'data' object."
         assert ('metadata_storage_path_decoded' in data), "'metadata_storage_path_decoded' field is required in 'data' object."
         assert ('metadata_storage_sas_token' in data), "'metadata_storage_sas_token ' field is required in 'data' object."
     except AssertionError  as error:
@@ -89,16 +86,16 @@ def transform_value(value, msg):
         
         output = {
             "key": data['metadata_storage_path'],
-            "formUrl":data['formUrl'],
+            #"formUrl":data['formUrl'],
             "metadata_file_path": data['metadata_storage_path_decoded'] + data['metadata_storage_sas_token'],
-            "file_path": data['formUrl'] + data['formSasToken'],
+            #"file_path": data['formUrl'] + data['formSasToken'],
             "model": model
         }  
     
         # Request to Azure Form Recognizer Model
         form_recognizer_url = f"{endpoint}formrecognizer/documentModels/{output['model']}:analyze?api-version=2022-08-31"
         headers = {"Content-Type": "application/json", "Ocp-Apim-Subscription-Key": key}
-        body = {'urlSource': output['file_path']} ### wczesniej bylo po prostu file_path
+        body = {'urlSource': output['metadata_file_path']} ### wczesniej bylo po prostu file_path
         
         r = requests.post(form_recognizer_url, headers=headers, json=body)
         output['Operation-location'] = r.headers['Operation-Location']
