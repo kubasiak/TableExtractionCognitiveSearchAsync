@@ -7,18 +7,35 @@ For it to work you need:
   - Azure storage with data to be processed
   - Azure Service Bus - Two queues named "polling_queue" and "results_queue" and their credentials
   - Azure Form Recognizer, and credentials
+  - Create Azure Function app (python) 
   - VSC and Azure addon with Azure Functions and Azure Core tools
   - Its useful to have Postman or other tool for testing and debugging purposes, but it's not necessary
   
-  You will need to update Setting -> Configuration of your web app adding env variables:
-  '''
-   "AZURE_WEB_JOB_STORAGE":"<your connection string>",
-   "AZURE_SERVICE_BUS_CONNECTION_STRING": "<your connection string>",
-   "AZURE_FORM_RECOGNIZER_ENDPOINT": "<https:...>",
-   "AZURE_FORM_RECOGNIZER_ENDPOINT_KEY": "<primary key>",
-   "AZURE_SEARCH_ENDPOINT": "<https:...>",
-   "AZURE_SEARCH_ENDPOINT_KEY": "<primary key>",
-   "AZURE_SEARCH_INDEX_NAME": "<your index name>",
-   "MODEL":"prebuilt-layout" OR  "invoice"
+  
+  You will need to update Setting -> Configuration of your function app adding env variables:
+  
+  |Variable name|value|
+  |-------------|------------|
+  |"AZURE_WEB_JOB_STORAGE"|"<your connection string>",|
+   "AZURE_WEB_JOB_STORAGE"|"<your connection string>",
+   "AZURE_SERVICE_BUS_CONNECTION_STRING"| "<your connection string>",
+   "AZURE_FORM_RECOGNIZER_ENDPOINT"| "<https:...>",
+   "AZURE_FORM_RECOGNIZER_ENDPOINT_KEY"|: "<primary key>",
+   "AZURE_SEARCH_ENDPOINT"| "<https:...>",
+   "AZURE_SEARCH_ENDPOINT_KEY"| "<primary key>",
+   "AZURE_SEARCH_INDEX_NAME"| "<your index name>",
+   "MODEL"|"prebuilt-layout" OR  "invoice"
      
-'''  
+
+git clone this repository
+  go to left hand side panel in VSC and find Azure.
+  Log in to Azure.
+  Find "workspaces" menu and deploy to Azure button: 
+  
+ <img src="https://user-images.githubusercontent.com/7407845/219422590-b5e02841-8d8d-493f-b391-fc2ab936e284.png"  width="30%" >
+  Follow the instructions to deploy your functions to the app. It should create 3 functions in your Azure Function app 
+  * Start_processing
+  * Fetch_results
+  * Push_results
+  
+  
