@@ -39,3 +39,36 @@ git clone this repository
   * Push_results
   
   
+  To include the function in your azure search index you need to add the skill to skillset: 
+  Here is an example of how it can look like:
+  
+          { 
+            "@odata.type":"#Microsoft.Skills.Custom.WebApiSkill",
+            "name":"formrecognizer-tables",
+            "description":"Analyze documents and extracts tables.",
+            "uri":"{{Async_table_extractor_url}}?code={{Async_table_extractor_key}}",
+            "httpMethod":"POST",
+            "timeout": "PT1M",
+            "context":"/document",
+            "batchSize":1,
+            "inputs":[ 
+                { 
+                    "name":"metadata_storage_sas_token",
+                    "source":"/document/metadata_storage_sas_token"
+                },
+                { 
+                    "name":"metadata_storage_path",
+                    "source":"/document/metadata_storage_path"
+                },
+                { 
+                    "name":"metadata_storage_path_decoded",
+                    "source":"/document/metadata_storage_path_decoded"
+                }
+            ],
+            "outputs":[ 
+                { 
+                    "name":"tables",
+                    "targetName":"tables"
+                }
+            ]
+        }
