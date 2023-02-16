@@ -6,7 +6,7 @@
       "type": "serviceBusTrigger",
       "direction": "in",
       "queueName": "polling_queue",
-      "connection": "AzureServiceBusConnectionString"
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ]
 }

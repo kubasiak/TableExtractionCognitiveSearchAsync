@@ -19,7 +19,7 @@
     {
       "type": "serviceBus",
       "direction": "out",
-      "connection": "AzureServiceBusConnectionString",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING",
       "name": "msg",
       "queueName": "polling_queue"
     }

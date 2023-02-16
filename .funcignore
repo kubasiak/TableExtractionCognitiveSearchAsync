@@ -6,3 +6,5 @@ test
 venv
 test_start_processing.ipynb
 test_fetch.ipynb
+venv_version__init__.py
+.env
