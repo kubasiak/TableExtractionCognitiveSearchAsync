@@ -10,6 +10,10 @@ def main(req: func.HttpRequest, msg: func.Out[str]) -> func.HttpResponse:
 
     try:
         body = json.dumps(req.get_json())
+        body = req.get_json()
+        logging.info(f"body from input request below")
+        logging.info(body)
+
     except ValueError:
         return func.HttpResponse(
              "Invalid body",
@@ -25,12 +29,14 @@ def main(req: func.HttpRequest, msg: func.Out[str]) -> func.HttpResponse:
         )
 
 def compose_response(json_data, msg):
-    values = json.loads(json_data)['values'] 
+    try:
+        values = json.loads(json_data)['values'] 
+    except:
+        logging.error("type json_data ")
+        values = json_data['values']
     # Prepare the Output before the loop
     results = {}
     results["values"] = []
-    logging.info(f"values {values}")
-
     try:
         for value in values:
             output_record = transform_value(value, msg)
@@ -82,7 +88,7 @@ def transform_value(value, msg):
             })    
 
     try:  
-        logging.info(f"data FROM INPUT: {data}")
+        logging.info(f"data FROM FR INPUT: {data}")
         
         output = {
             "key": data['metadata_storage_path'],

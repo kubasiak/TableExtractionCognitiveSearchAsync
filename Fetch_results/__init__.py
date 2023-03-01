@@ -8,7 +8,9 @@ def main(msgin: func.ServiceBusMessage):
 
     # Use the REST API to get Form Recognizer output and save it to Azure Service Bus
     data = json.loads(msgin.get_body().decode('utf-8'))
+    logging.info(f"FETCHING data from poller queue {str(data)}")
     r = requests.get(data['Operation-location'], headers={'Ocp-Apim-Subscription-Key': os.getenv('AZURE_FORM_RECOGNIZER_ENDPOINT_KEY')})
+    logging.info(f"GETTING operation-location:{str(r)}")
     servicebus_client = ServiceBusClient.from_connection_string(conn_str=os.getenv('AZURE_SERVICE_BUS_CONNECTION_STRING'), logging_enable=True)
     if r.json()['status'] == 'succeeded':
         data['results'] = r.json()

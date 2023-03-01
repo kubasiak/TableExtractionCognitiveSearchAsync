@@ -16,14 +16,13 @@ def process_tables(data):
    # tables.append({'raw content': data['results']['analyzeResult']['content'] })
     
     if 'tables' in data['results']['analyzeResult'].keys():
-            res=data['results']['analyzeResult']['tables']
-            for table in res:
+             for t in data['results']['analyzeResult']['tables']:
                 raw_text=[]
                 cells = []
                 headers=[]
-                regions=table['boundingRegions']
+                regions=t['boundingRegions']
                 for r in regions: pageNumber = r['pageNumber']
-                for cell in table['cells']:
+                for cell in t['cells']:
                     cells.append(
                     {
                         "text": cell['content'],
@@ -41,20 +40,41 @@ def process_tables(data):
                     
                 tmptable =   {
                     "page_number": pageNumber,
-                    "raw_count" : table['rowCount'],
-                    "column_count": table['columnCount'],
+                    "raw_count" : t['rowCount'],
+                    "column_count": t['columnCount'],
                     "headers": headers,
                     "cells": cells,
                     "raw_text":raw_text
                 }  
 
                 tables.append(str(tmptable))
-                h=len(headers)
-    #results['value']['data']=tables
-    #results['value']=tables
-    #results['value'].append(data['results']['analyzeResult']['content'])
-    #results['content']= {"content":data['results']['analyzeResult']['content']}
+                
     return(tables)
+
+def process_tables_pipe(data):
+    results=[]
+    tablecount = 0
+    for t in data['results']['analyzeResult']['tables']:
+        tablecount+=1
+        page_number = t['boundingRegions'][0]['pageNumber']
+        table_id = str(page_number)+'_'+str(tablecount)
+        previous_cell_row=0
+        rowcontent='| '
+        tablecontent = ''
+        for c in t['cells']: #first cell
+            try:
+                if c['rowIndex'] == previous_cell_row:
+                    rowcontent +=  c['content'] + " | "
+                else:
+                    tablecontent += rowcontent + "\n"
+                    rowcontent='|'
+                    rowcontent += c['content'] + " | "
+                    previous_cell_row += 1
+            except: logging.info( f"cell: {str(c)}")
+        results.append(f"{tablecontent}|")
+        logging.info('--- ai tables --')
+        logging.info(f"table nr {tablecount} content {tablecontent}")
+    return(results)
 
 def main(msg: func.ServiceBusMessage):
     #model= os.environ['MODEL']
@@ -62,7 +82,7 @@ def main(msg: func.ServiceBusMessage):
     data = json.loads(msg.get_body().decode('utf-8'))
     logging.info(f"PUSH RESULTS DATA LOADED FROM MSG BODY {data.keys()}") #keys?
     model = data['model']
-
+    
     results = {  
         "value": [  
             {  
@@ -74,7 +94,8 @@ def main(msg: func.ServiceBusMessage):
 
 
     if model=='prebuilt-layout':
-        processed_data=process_tables(data)
+        processed_data = process_tables(data)
+        results['value'][0]['pipe_tables']=process_tables_pipe(data)
         fieldname='tables'
 
     if model == 'prebuilt-invoice':
@@ -83,6 +104,7 @@ def main(msg: func.ServiceBusMessage):
     
     logging.info("processed_data: "+str(processed_data))
     results['value'][0][fieldname]=processed_data
+    
     
     # Push data on Azure Cognitive Search
     search_endpoint = os.environ["AZURE_SEARCH_ENDPOINT"]
