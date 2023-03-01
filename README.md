@@ -3,7 +3,7 @@
 This repository is integrating Azure Cognigive Form Recognizer with Azure Cognitive Search in asyncronous process. 
 For it to work you need:
   - Azure search and its credentials
-  - Azure search index/skillset/indexer in the format that is compatible with the output of the pipeline (tbc)
+  - Azure search index/skillset/indexer in the format that is compatible with the output of the pipeline (below)
   - Azure storage with data to be processed
   - Azure Service Bus - Two queues named "polling_queue" and "results_queue" and their credentials
   - Azure Form Recognizer, and credentials
