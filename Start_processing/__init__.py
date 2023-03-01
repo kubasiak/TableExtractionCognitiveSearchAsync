@@ -1,9 +1,5 @@
 import logging, json, os, requests
 import azure.functions as func
-#from azure.appconfiguration.provider import (
-#    AzureAppConfigurationProvider,
-#    SettingSelector
-#)
 
 def main(req: func.HttpRequest, msg: func.Out[str]) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
@@ -69,14 +65,6 @@ def transform_value(value, msg):
             })
     
     try:
-        appsettings_connection_string = os.environ['AZURE_APPCONFIG_CONNECTION_STRING']
-        
-        #config = AzureAppConfigurationProvider.load(connection_string=appsettings_connection_string)
-        #cf= dict(config)
-        ##endpoint = cf["AZURE_FORM_RECOGNIZER_ENDPOINT"]
-        #key = cf["AZURE_FORM_RECOGNIZER_ENDPOINT_KEY"]
-        #
-        # model = cf["MODEL"]
         endpoint = os.environ["AZURE_FORM_RECOGNIZER_ENDPOINT"]
         key = os.environ["AZURE_FORM_RECOGNIZER_ENDPOINT_KEY"]
         model = os.environ["MODEL"]
@@ -92,16 +80,14 @@ def transform_value(value, msg):
         
         output = {
             "key": data['metadata_storage_path'],
-            #"formUrl":data['formUrl'],
             "metadata_file_path": data['metadata_storage_path_decoded'] + data['metadata_storage_sas_token'],
-            #"file_path": data['formUrl'] + data['formSasToken'],
             "model": model
         }  
     
         # Request to Azure Form Recognizer Model
         form_recognizer_url = f"{endpoint}formrecognizer/documentModels/{output['model']}:analyze?api-version=2022-08-31"
         headers = {"Content-Type": "application/json", "Ocp-Apim-Subscription-Key": key}
-        body = {'urlSource': output['metadata_file_path']} ### wczesniej bylo po prostu file_path
+        body = {'urlSource': output['metadata_file_path']} 
         
         r = requests.post(form_recognizer_url, headers=headers, json=body)
         output['Operation-location'] = r.headers['Operation-Location']
