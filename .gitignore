@@ -1,5 +1,5 @@
 *.ipynb
-app_connection_configuration.py
+app_configuration_connection.py
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
