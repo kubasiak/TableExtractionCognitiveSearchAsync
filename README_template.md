@@ -67,7 +67,7 @@ This custom skill can invoke any of the following Form Recognizer APIs
 This sample data is pointing to a file stored in this repository, but when the skill is integrated in a skillset, the URL and token will be provided by cognitive search.
 
 ```json
-body = {
+{
     "values": [
         {   "recordId": "record1",
             "data": { 
